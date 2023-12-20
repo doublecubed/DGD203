@@ -47,7 +47,7 @@ public class Map
 		return _coordinates;
 	}
 
-	public void ChangeCoordinates(int[] newCoordinates)
+	public void SetCoordinates(int[] newCoordinates)
 	{
 		if (newCoordinates.Length != 2)
 		{

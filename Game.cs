@@ -1,4 +1,6 @@
-﻿namespace DGD203_2
+﻿using System.IO;
+
+namespace DGD203_2
 {
     internal class Game
     {
@@ -34,10 +36,16 @@
 
         public void StartGame(Game gameInstanceReference)
         {
+            CreateNewMap();
+            LoadGame();
+
+            if (_playerName == null)
+            {
+                CreatePlayer();
+            }
+
             _gameRunning = true;
 
-            CreateNewMap();
-            CreatePlayer();
             StartGameLoop();
         }
 
@@ -136,6 +144,14 @@
                     Console.WriteLine("We hope you enjoyed our game!");
                     _gameRunning = false;
                     break;
+                case "save":
+                    SaveGame();
+                    Console.WriteLine("Game saved");
+                    break;
+                case "load":
+                    LoadGame();
+                    Console.WriteLine("Game loaded");
+                    break;
                 default:
                     Console.WriteLine("We can currently only accept map movement commands. Please provide a direction, indicated by its initial letter (N, S, W or E");
                     break;
@@ -143,6 +159,55 @@
 
 
         }
+
+        #endregion
+
+        #region Save Management
+
+        private void LoadGame()
+        {
+            string path = SaveFilePath();
+
+            if (!File.Exists(path)) return;
+            
+            // Reading the file contents
+            string[] saveContent = File.ReadAllLines(path);
+            _playerName = saveContent[0];
+            _playerAge = Int32.Parse(saveContent[1]);
+
+            List<int> coords = saveContent[2].Split(',').Select(int.Parse).ToList();
+            int[] coordArray = new int[2];
+            coordArray[0] = coords[0];
+            coordArray[1] = coords[1];
+
+            _gameMap.SetCoordinates(coordArray);
+
+        }
+
+        private void SaveGame()
+        {
+            // Player Coordinates
+            string xCoord = _gameMap.GetCoordinates()[0].ToString();
+            string yCoord = _gameMap.GetCoordinates()[1].ToString();
+            string playerCoords = $"{xCoord},{yCoord}";
+
+            string saveContent = $"{_playerName}{Environment.NewLine}{_playerAge}{Environment.NewLine}{playerCoords}";
+
+            string path = SaveFilePath();
+
+            File.WriteAllText(path, saveContent);
+        }
+
+        private string SaveFilePath()
+        {
+            // Get the save file path
+            string workingDirectory = Environment.CurrentDirectory;
+            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
+            string path = projectDirectory + @"\save.txt";
+
+            return path;
+        }
+
 
         #endregion
 
