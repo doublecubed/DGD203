@@ -36,9 +36,13 @@ namespace DGD203_2
 
         public void StartGame(Game gameInstanceReference)
         {
+            // Generate game environment
             CreateNewMap();
+
+            // Load game
             LoadGame();
 
+            // Deal with player generation
             if (_playerName == null)
             {
                 CreatePlayer();
@@ -152,12 +156,13 @@ namespace DGD203_2
                     LoadGame();
                     Console.WriteLine("Game loaded");
                     break;
+                case "help":
+                    Console.WriteLine(HelpMessage());
+                    break;
                 default:
-                    Console.WriteLine("We can currently only accept map movement commands. Please provide a direction, indicated by its initial letter (N, S, W or E");
+                    Console.WriteLine("Command not recognized. Please type 'help' for a list of available commands");
                     break;
             }
-
-
         }
 
         #endregion
@@ -208,6 +213,22 @@ namespace DGD203_2
             return path;
         }
 
+        #endregion
+
+        #region Miscellaneous
+
+        private string HelpMessage()
+        {
+            return @"Here are the current commands:
+N: go north
+S: go south
+W: go west
+E: go east
+load: Load saved game
+save: save current game
+exit: exit the game";
+
+        }
 
         #endregion
 
