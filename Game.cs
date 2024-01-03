@@ -55,9 +55,11 @@ namespace DGD203_2
                 CreatePlayer();
             }
 
-            _gameRunning = true;
+            InitializeGameConditions();
 
+            _gameRunning = true;
             StartGameLoop();
+            
         }
 
         private void CreateNewMap()
@@ -109,6 +111,11 @@ namespace DGD203_2
                 _playerAge = 2;
                 Console.WriteLine("Ha ha ha, so mature. I think it's appropriate that I record your age as 2");
             }
+        }
+
+        private void InitializeGameConditions()
+        {
+            _gameMap.CheckForLocation(_gameMap.GetCoordinates());
         }
 
 
@@ -167,15 +174,16 @@ namespace DGD203_2
                 case "help":
                     Console.WriteLine(HelpMessage());
                     break;
+                case "where":
+                    _gameMap.CheckForLocation(_gameMap.GetCoordinates());
+                    break;
+                case "clear":
+                    Console.Clear();
+                    break;
                 default:
                     Console.WriteLine("Command not recognized. Please type 'help' for a list of available commands");
                     break;
             }
-        }
-
-        private void CheckForLocation(Vector2 coordinates)
-        {
-
         }
 
         #endregion
@@ -194,9 +202,7 @@ namespace DGD203_2
             _playerAge = Int32.Parse(saveContent[1]);
 
             List<int> coords = saveContent[2].Split(',').Select(int.Parse).ToList();
-            int[] coordArray = new int[2];
-            coordArray[0] = coords[0];
-            coordArray[1] = coords[1];
+            Vector2 coordArray = new Vector2(coords[0], coords[1]);
 
             _gameMap.SetCoordinates(coordArray);
 

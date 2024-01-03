@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Numerics;
 using System.ComponentModel;
+using System.Diagnostics;
 
 public class Map
 {
-	private int[] _coordinates;
+	private Vector2 _coordinates;
 
 	private int[] _widthBoundaries;
 	private int[] _heightBoundaries;
@@ -29,9 +30,7 @@ public class Map
 		_heightBoundaries[1] = heightBoundary;
 
 		// Setting starting coordinates
-        _coordinates = new int[2];
-        _coordinates[0] = 0;
-        _coordinates[1] = 0;
+        _coordinates = new Vector2(0,0);
 
 		GenerateLocations();
 
@@ -41,19 +40,13 @@ public class Map
 
     #region Coordinates
 
-    public int[] GetCoordinates()
+    public Vector2 GetCoordinates()
 	{
 		return _coordinates;
 	}
 
-	public void SetCoordinates(int[] newCoordinates)
+	public void SetCoordinates(Vector2 newCoordinates)
 	{
-		if (newCoordinates.Length != 2)
-		{
-			Console.WriteLine("ERROR: Coordinates must be fed in an int[2] format");
-			return;
-		}
-
 		_coordinates = newCoordinates;
 	}
 
@@ -63,8 +56,8 @@ public class Map
 
 	public void MovePlayer(int x, int y)
 	{
-		int newXCoordinate = _coordinates[0] + x;
-        int newYCoordinate = _coordinates[1] + y;
+		int newXCoordinate = (int)_coordinates[0] + x;
+        int newYCoordinate = (int)_coordinates[1] + y;
 
 		if (!CanMoveTo(newXCoordinate, newYCoordinate)) 
 		{
@@ -75,9 +68,7 @@ public class Map
 		_coordinates[0] = newXCoordinate;
 		_coordinates[1] = newYCoordinate;
 
-		if (IsOnLocation(_coordinates))
-
-        Console.WriteLine($"You are now standing on {_coordinates[0]},{_coordinates[1]}");
+		CheckForLocation(_coordinates);
     }
 
 	private bool CanMoveTo(int x, int y)
@@ -97,28 +88,41 @@ public class Map
         Location gristol = new Location("Gristol", gristolLocation);
         _locations[0] = gristol;
 
-        Vector2 tyviaLocation = new Vector2(-1, 1);
+        Vector2 tyviaLocation = new Vector2(-2, 2);
         Location tyvia = new Location("Tyvia", tyviaLocation);
         _locations[1] = tyvia;
 
-        Vector2 serkonosLocation = new Vector2(1, -1);
+        Vector2 serkonosLocation = new Vector2(1, -2);
         Location serkonos = new Location("Serkonos", serkonosLocation);
         _locations[2] = serkonos;
 
-        Vector2 morleyLocation = new Vector2(0, 1);
+        Vector2 morleyLocation = new Vector2(1, 1);
         Location morley = new Location("Morley", morleyLocation);
         _locations[3] = morley;
     }
 
-	private bool IsOnLocation(int[] coords)
+	public void CheckForLocation(Vector2 coordinates)
 	{
-		// Convert int[] to Vector2
+        Console.WriteLine($"You are now standing on {_coordinates[0]},{_coordinates[1]}");
 
-		// ADAPTER OR TOTAL CONVERSION?
+        if (IsOnLocation(_coordinates, out Location location))
+        {
+            Console.WriteLine($"You are in {location.Name}");
+        }
+    }
 
-		// IT DEPENDS
+	private bool IsOnLocation(Vector2 coords, out Location foundLocation)
+	{
+		for (int i = 0; i < _locations.Length; i++)
+		{
+			if (_locations[i].Coordinates == coords)
+			{
+				foundLocation = _locations[i];
+				return true;
+			}
+		}
 
-
+		foundLocation = null;
 		return false;
 	}
 
