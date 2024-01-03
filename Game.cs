@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Numerics;
 
 namespace DGD203_2
 {
@@ -19,6 +20,12 @@ namespace DGD203_2
 
         private string _playerName;
         private int _playerAge;
+
+        #endregion
+
+        #region World Variables
+
+        private Location[] _locations;
 
         #endregion
 
@@ -57,6 +64,7 @@ namespace DGD203_2
         {
             _gameMap = new Map(_defaultMapWidth, _defaultMapHeight);
         }
+
 
         private void CreatePlayer()
         {
@@ -163,6 +171,11 @@ namespace DGD203_2
                     Console.WriteLine("Command not recognized. Please type 'help' for a list of available commands");
                     break;
             }
+        }
+
+        private void CheckForLocation(Vector2 coordinates)
+        {
+
         }
 
         #endregion

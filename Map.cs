@@ -9,7 +9,8 @@ public class Map
 	private int[] _widthBoundaries;
 	private int[] _heightBoundaries;
 
-	private List<Location> _locations;
+	private Location[] _locations;
+
 
 	public Map(int width, int height)
 	{
@@ -32,17 +33,15 @@ public class Map
         _coordinates[0] = 0;
         _coordinates[1] = 0;
 
-		// Create Locations
-		_locations = new List<Location>();
-
-		Location startPoint = new Location("Start Point", new Vector2(0,0));
-		_locations.Add(startPoint);
+		GenerateLocations();
 
 		// Display result message
 		Console.WriteLine($"Created map with size {width}x{height}");
     }
 
-	public int[] GetCoordinates()
+    #region Coordinates
+
+    public int[] GetCoordinates()
 	{
 		return _coordinates;
 	}
@@ -58,6 +57,10 @@ public class Map
 		_coordinates = newCoordinates;
 	}
 
+	#endregion
+
+	#region Movement
+
 	public void MovePlayer(int x, int y)
 	{
 		int newXCoordinate = _coordinates[0] + x;
@@ -72,6 +75,8 @@ public class Map
 		_coordinates[0] = newXCoordinate;
 		_coordinates[1] = newYCoordinate;
 
+		if (IsOnLocation(_coordinates))
+
         Console.WriteLine($"You are now standing on {_coordinates[0]},{_coordinates[1]}");
     }
 
@@ -80,4 +85,42 @@ public class Map
 		return !(x < _widthBoundaries[0] || x > _widthBoundaries[1] || y < _heightBoundaries[0] || y > _heightBoundaries[1]);
 	}
 
+	#endregion
+
+	#region Locations
+
+	private void GenerateLocations()
+	{
+        _locations = new Location[4];
+
+        Vector2 gristolLocation = new Vector2(0, 0);
+        Location gristol = new Location("Gristol", gristolLocation);
+        _locations[0] = gristol;
+
+        Vector2 tyviaLocation = new Vector2(-1, 1);
+        Location tyvia = new Location("Tyvia", tyviaLocation);
+        _locations[1] = tyvia;
+
+        Vector2 serkonosLocation = new Vector2(1, -1);
+        Location serkonos = new Location("Serkonos", serkonosLocation);
+        _locations[2] = serkonos;
+
+        Vector2 morleyLocation = new Vector2(0, 1);
+        Location morley = new Location("Morley", morleyLocation);
+        _locations[3] = morley;
+    }
+
+	private bool IsOnLocation(int[] coords)
+	{
+		// Convert int[] to Vector2
+
+		// ADAPTER OR TOTAL CONVERSION?
+
+		// IT DEPENDS
+
+
+		return false;
+	}
+
+	#endregion
 }
