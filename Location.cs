@@ -7,14 +7,16 @@ public class Location
 
     public string Name { get; private set; }
     public Vector2 Coordinates { get; private set; }
+    public LocationType Type { get; private set; }
 
     #endregion
 
     #region CONSTRUCTOR
 
-    public Location(string locationName, Vector2 coordinates)
+    public Location(string locationName, LocationType type, Vector2 coordinates)
     {
         Name = locationName;
+        Type = type;
         Coordinates = coordinates;
     }
 
@@ -23,5 +25,11 @@ public class Location
     #region METHODS
 
     #endregion
+}
 
+public enum LocationType
+{
+    City,
+    Combat,
+    Cave
 }

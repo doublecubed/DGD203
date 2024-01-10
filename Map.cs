@@ -2,9 +2,12 @@
 using System.Numerics;
 using System.ComponentModel;
 using System.Diagnostics;
+using DGD203_2;
 
 public class Map
 {
+	private Game _theGame;
+
 	private Vector2 _coordinates;
 
 	private int[] _widthBoundaries;
@@ -13,8 +16,10 @@ public class Map
 	private Location[] _locations;
 
 
-	public Map(int width, int height)
+	public Map(Game game, int width, int height)
 	{
+		_theGame = game;
+
 		// Setting the width boundaries
 		int widthBoundary = (width - 1) / 2;
 
@@ -82,23 +87,32 @@ public class Map
 
 	private void GenerateLocations()
 	{
-        _locations = new Location[4];
+        _locations = new Location[6];
 
         Vector2 gristolLocation = new Vector2(0, 0);
-        Location gristol = new Location("Gristol", gristolLocation);
+        Location gristol = new Location("Gristol", LocationType.City, gristolLocation);
         _locations[0] = gristol;
 
         Vector2 tyviaLocation = new Vector2(-2, 2);
-        Location tyvia = new Location("Tyvia", tyviaLocation);
+        Location tyvia = new Location("Tyvia", LocationType.City, tyviaLocation);
         _locations[1] = tyvia;
 
         Vector2 serkonosLocation = new Vector2(1, -2);
-        Location serkonos = new Location("Serkonos", serkonosLocation);
+        Location serkonos = new Location("Serkonos", LocationType.City, serkonosLocation);
         _locations[2] = serkonos;
 
         Vector2 morleyLocation = new Vector2(1, 1);
-        Location morley = new Location("Morley", morleyLocation);
+        Location morley = new Location("Morley", LocationType.City, morleyLocation);
         _locations[3] = morley;
+
+		Vector2 firstCombatLocation = new Vector2(-2, 1);
+		Location firstCombat = new Location("First Combat", LocationType.Combat, firstCombatLocation);
+		_locations[4] = firstCombat;
+
+        Vector2 secondCombatLocation = new Vector2(-1, -1);
+        Location secondCombat = new Location("Second Combat", LocationType.Combat, secondCombatLocation);
+        _locations[5] = secondCombat;
+
     }
 
 	public void CheckForLocation(Vector2 coordinates)
@@ -107,7 +121,14 @@ public class Map
 
         if (IsOnLocation(_coordinates, out Location location))
         {
-            Console.WriteLine($"You are in {location.Name}");
+            if (location.Type == LocationType.Combat)
+			{
+				Console.WriteLine("Prepare to fight!");
+				Combat combat = new Combat(_theGame);
+			} else
+			{
+				Console.WriteLine($"You are in {location.Name} {location.Type}");
+			}
         }
     }
 

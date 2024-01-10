@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace DGD203_2
 {
-    internal class Game
+    public class Game
     {
         #region VARIABLES
 
@@ -18,8 +18,9 @@ namespace DGD203_2
 
         #region Player Variables
 
+        public Player Player { get; private set; }
+
         private string _playerName;
-        private int _playerAge;
 
         #endregion
 
@@ -50,10 +51,8 @@ namespace DGD203_2
             LoadGame();
 
             // Deal with player generation
-            if (_playerName == null)
-            {
-                CreatePlayer();
-            }
+            CreatePlayer();
+            
 
             InitializeGameConditions();
 
@@ -64,14 +63,18 @@ namespace DGD203_2
 
         private void CreateNewMap()
         {
-            _gameMap = new Map(_defaultMapWidth, _defaultMapHeight);
+            _gameMap = new Map(this, _defaultMapWidth, _defaultMapHeight);
         }
-
 
         private void CreatePlayer()
         {
-            GetPlayerName();
-            GetPlayerAge();
+            if (_playerName == null)
+            {
+                GetPlayerName();
+            }
+
+            // _playerName may be null. It would be a good idea to put a check here.
+            Player = new Player(_playerName);
         }
 
         private void GetPlayerName()
@@ -92,24 +95,6 @@ namespace DGD203_2
             else
             {
                 Console.WriteLine($"Pleased to meet you {_playerName}, we will have a great adventure together!");
-            }
-        }
-
-        private void GetPlayerAge()
-        {
-            Console.WriteLine($"Okay then, what is your age {_playerName}?");
-
-            string playerAgeInString = Console.ReadLine();
-
-            if (Int32.TryParse(playerAgeInString, out int x))
-            {
-                _playerAge = x;
-                Console.WriteLine($"Wow, what a wonderful age, {_playerAge} is");
-            }
-            else
-            {
-                _playerAge = 2;
-                Console.WriteLine("Ha ha ha, so mature. I think it's appropriate that I record your age as 2");
             }
         }
 
@@ -180,6 +165,9 @@ namespace DGD203_2
                 case "clear":
                     Console.Clear();
                     break;
+                case "who":
+                    Console.WriteLine($"You are {Player.Name}, the mighty hero of the Isles");
+                    break;
                 default:
                     Console.WriteLine("Command not recognized. Please type 'help' for a list of available commands");
                     break;
@@ -199,7 +187,6 @@ namespace DGD203_2
             // Reading the file contents
             string[] saveContent = File.ReadAllLines(path);
             _playerName = saveContent[0];
-            _playerAge = Int32.Parse(saveContent[1]);
 
             List<int> coords = saveContent[2].Split(',').Select(int.Parse).ToList();
             Vector2 coordArray = new Vector2(coords[0], coords[1]);
@@ -215,7 +202,7 @@ namespace DGD203_2
             string yCoord = _gameMap.GetCoordinates()[1].ToString();
             string playerCoords = $"{xCoord},{yCoord}";
 
-            string saveContent = $"{_playerName}{Environment.NewLine}{_playerAge}{Environment.NewLine}{playerCoords}";
+            string saveContent = $"{_playerName}{Environment.NewLine}{playerCoords}";
 
             string path = SaveFilePath();
 
