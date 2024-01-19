@@ -133,7 +133,7 @@ namespace DGD203_2
 
             switch (_playerInput)
             {
-                case ("N"):
+                case "N":
                     _gameMap.MovePlayer(0, 1);
                     break;
                 case "S":
