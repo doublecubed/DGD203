@@ -90,15 +90,21 @@ public class Map
         _locations = new Location[6];
 
         Vector2 gristolLocation = new Vector2(0, 0);
-        Location gristol = new Location("Gristol", LocationType.City, gristolLocation);
+		List<Item> gristolItems = new List<Item>();
+		gristolItems.Add(Item.Coin);
+        Location gristol = new Location("Gristol", LocationType.City, gristolLocation, gristolItems);
         _locations[0] = gristol;
 
         Vector2 tyviaLocation = new Vector2(-2, 2);
-        Location tyvia = new Location("Tyvia", LocationType.City, tyviaLocation);
+		List<Item> tyviaItems = new List<Item>();
+		tyviaItems.Add(Item.Charm);
+        Location tyvia = new Location("Tyvia", LocationType.City, tyviaLocation, tyviaItems);
         _locations[1] = tyvia;
 
         Vector2 serkonosLocation = new Vector2(1, -2);
-        Location serkonos = new Location("Serkonos", LocationType.City, serkonosLocation);
+		List<Item> serkonosItems = new List<Item>();
+		serkonosItems.Add(Item.Rune);
+        Location serkonos = new Location("Serkonos", LocationType.City, serkonosLocation, serkonosItems);
         _locations[2] = serkonos;
 
         Vector2 morleyLocation = new Vector2(1, 1);
@@ -128,6 +134,11 @@ public class Map
 			} else
 			{
 				Console.WriteLine($"You are in {location.Name} {location.Type}");
+
+				if (HasItem(location))
+				{
+					Console.WriteLine($"There is a {location.ItemsOnLocation[0]} here");
+				}
 			}
         }
     }
@@ -145,6 +156,56 @@ public class Map
 
 		foundLocation = null;
 		return false;
+	}
+
+	private bool HasItem(Location location)
+	{
+		return location.ItemsOnLocation.Count != 0;
+
+		// ---- THE LONG FORM ----
+		//if (location.ItemsOnLocation.Count == 0)
+		//{
+		//	return false;
+		//} else
+		//{
+		//	return true;
+		//}
+	}
+
+	public void TakeItem(Location location)
+	{
+
+	}
+
+	public void TakeItem(Player player, Vector2 coordinates)
+	{
+		if (IsOnLocation(coordinates, out Location location))
+		{
+			if (HasItem(location))
+			{
+				Item itemOnLocation = location.ItemsOnLocation[0];
+
+				player.TakeItem(itemOnLocation);
+				location.RemoveItem(itemOnLocation);
+
+				Console.WriteLine($"You took the {itemOnLocation}");
+
+				return;
+			}
+		}
+
+		Console.WriteLine("There is nothing to take here!");
+	}
+
+	public void RemoveItemFromLocation(Item item)
+	{
+		for (int i = 0; i < _locations.Length; i++)
+		{
+			if (_locations[i].ItemsOnLocation.Contains(item))
+			{
+				_locations[i].RemoveItem(item);
+			}
+		}
 	}
 
 	#endregion

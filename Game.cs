@@ -21,6 +21,7 @@ namespace DGD203_2
         public Player Player { get; private set; }
 
         private string _playerName;
+        private List<Item> _loadedItems;
 
         #endregion
 
@@ -74,7 +75,7 @@ namespace DGD203_2
             }
 
             // _playerName may be null. It would be a good idea to put a check here.
-            Player = new Player(_playerName);
+            Player = new Player(_playerName, _loadedItems);
         }
 
         private void GetPlayerName()
@@ -168,6 +169,12 @@ namespace DGD203_2
                 case "who":
                     Console.WriteLine($"You are {Player.Name}, the mighty hero of the Isles");
                     break;
+                case "take":
+                    _gameMap.TakeItem(Player, _gameMap.GetCoordinates());
+                    break;
+                case "inventory":
+                    Player.CheckInventory();
+                    break;
                 default:
                     Console.WriteLine("Command not recognized. Please type 'help' for a list of available commands");
                     break;
@@ -186,10 +193,28 @@ namespace DGD203_2
             
             // Reading the file contents
             string[] saveContent = File.ReadAllLines(path);
+
+            // Set the player name
             _playerName = saveContent[0];
 
-            List<int> coords = saveContent[2].Split(',').Select(int.Parse).ToList();
+            // Set player coordinates
+            List<int> coords = saveContent[1].Split(',').Select(int.Parse).ToList();
             Vector2 coordArray = new Vector2(coords[0], coords[1]);
+
+            // Set player inventory
+            _loadedItems = new List<Item>();
+
+            List<string> itemStrings = saveContent[2].Split(',').ToList();
+
+            for (int i = 0; i < itemStrings.Count; i++)
+            {
+                if (Enum.TryParse(itemStrings[i], out Item result))
+                {
+                    Item item = result;
+                    _loadedItems.Add(item);
+                    _gameMap.RemoveItemFromLocation(item);
+                }
+            }
 
             _gameMap.SetCoordinates(coordArray);
 
@@ -202,7 +227,20 @@ namespace DGD203_2
             string yCoord = _gameMap.GetCoordinates()[1].ToString();
             string playerCoords = $"{xCoord},{yCoord}";
 
-            string saveContent = $"{_playerName}{Environment.NewLine}{playerCoords}";
+            // Player inventory
+            List<Item> items = Player.Inventory.Items;
+            string playerItems = "";
+            for (int i = 0; i < items.Count; i++)
+            {
+                playerItems += items[i].ToString();
+                
+                if(i != items.Count -1)
+                {
+                    playerItems += ",";
+                }
+            }
+
+            string saveContent = $"{_playerName}{Environment.NewLine}{playerCoords}{Environment.NewLine}{playerItems}";
 
             string path = SaveFilePath();
 
