@@ -129,8 +129,13 @@ public class Map
         {
             if (location.Type == LocationType.Combat)
 			{
+				if (location.CombatAlreadyHappened) return;
+
 				Console.WriteLine("Prepare to fight!");
-				Combat combat = new Combat(_theGame);
+				Combat combat = new Combat(_theGame, location);
+
+				combat.StartCombat();
+
 			} else
 			{
 				Console.WriteLine($"You are in {location.Name} {location.Type}");

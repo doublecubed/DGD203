@@ -10,6 +10,8 @@ public class Location
     public Vector2 Coordinates { get; private set; }
     public LocationType Type { get; private set; }
 
+    public bool CombatAlreadyHappened { get; private set; }
+
     public List<Item> ItemsOnLocation { get; private set; }
 
     #endregion
@@ -39,6 +41,12 @@ public class Location
     public void RemoveItem(Item item)
     {
         ItemsOnLocation.Remove(item);
+    }
+
+    public void CombatHappened()
+    {
+        if (Type != LocationType.Combat) return;
+        CombatAlreadyHappened = true;
     }
 
     #endregion

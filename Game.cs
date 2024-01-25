@@ -120,6 +120,7 @@ namespace DGD203_2
             {
                 GetInput();
                 ProcessInput();
+                CheckPlayerPulse();
             }
         }
 
@@ -151,8 +152,7 @@ namespace DGD203_2
                     _gameMap.MovePlayer(-1, 0);
                     break;
                 case "exit":
-                    Console.WriteLine("We hope you enjoyed our game!");
-                    _gameRunning = false;
+                    EndGame();
                     break;
                 case "save":
                     SaveGame();
@@ -184,6 +184,20 @@ namespace DGD203_2
                     Console.WriteLine("Command not recognized. Please type 'help' for a list of available commands");
                     break;
             }
+        }
+
+        private void CheckPlayerPulse()
+        {
+            if (Player.Health <= 0)
+            {
+                EndGame();
+            }
+        }
+
+        private void EndGame()
+        {
+            Console.WriteLine("We hope you enjoyed our game!");
+            _gameRunning = false;
         }
 
         #endregion
@@ -275,7 +289,12 @@ W: go west
 E: go east
 load: Load saved game
 save: save current game
-exit: exit the game";
+exit: exit the game
+inventory: view your inventory
+take: take the item present on the location
+who: view the player information
+where: view current location
+clear: clear the screen";
 
         }
 
