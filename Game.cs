@@ -74,6 +74,11 @@ namespace DGD203_2
                 GetPlayerName();
             }
 
+            if (_loadedItems == null)
+            {
+                _loadedItems = new List<Item>();
+            }
+
             // _playerName may be null. It would be a good idea to put a check here.
             Player = new Player(_playerName, _loadedItems);
         }
